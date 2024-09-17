@@ -42,7 +42,7 @@ class DiceController extends Controller{
 		const player = this.#players[playerIndex];
 		const dice = diceIndex == 0 ? player.firstDice : (diceIndex == 1 ? player.secondDice : player.thirdDice);
 
-		const playerSpan = rollSection.querySelector("span." + (playerIndex == 0 ? "left" : "right"));
+		const playerSpan = this.rollSection.querySelector("span." + (playerIndex == 0 ? "left" : "right"));
 		const diceButton = playerSpan.querySelector("button." + (diceIndex == 0 ? "first" : (diceIndex == 1 ? "second" : "third")));
 		
 		diceButton.disabled = true;
@@ -66,7 +66,7 @@ class DiceController extends Controller{
 		this.#players[1].secondDice.reset();
 		this.#players[1].thirdDice.reset();
 
-		for (const diceButton of rollSection.querySelectorAll("span>button")) {
+		for (const diceButton of this.rollSection.querySelectorAll("span>button")) {
 			diceButton.innerText = "?";
 			diceButton.disabled = false;
 		}
