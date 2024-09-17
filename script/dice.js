@@ -4,7 +4,7 @@ import { sleep } from "../../../tool/threads.js";
 /**
  * The dice application controller type.
  */
-class DiceController {
+class DiceController extends Object{
 	#players;
 
 	/**
@@ -12,6 +12,7 @@ class DiceController {
 	 * and initiating the controller logic.
 	 */
 	constructor () {
+		super();
 		this.#players = [
 			{ firstDice: new Dice(), secondDice: new Dice(), thirdDice: new Dice() },
 			{ firstDice: new Dice(), secondDice: new Dice(), thirdDice: new Dice() }
