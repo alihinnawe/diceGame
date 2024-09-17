@@ -1,10 +1,10 @@
 import { sleep } from "../../../tool/threads.js";
-
+import Controller from "../../../tool/controller.js";
 
 /**
  * The dice application controller type.
  */
-class DiceController extends Object{
+class DiceController extends Controller{
 	#players;
 
 	/**
@@ -19,7 +19,7 @@ class DiceController extends Object{
 		];
 
 		// register event listeners
-		const section = document.querySelector("article.center>section.roll");
+		const section = this.center.querySelector("section.roll");
 		section.querySelector("span.left button.first").addEventListener("click", event => this.processDiceRoll(0, 0));
 		section.querySelector("span.left button.second").addEventListener("click", event => this.processDiceRoll(0, 1));
 		section.querySelector("span.left button.third").addEventListener("click", event => this.processDiceRoll(0, 2));
@@ -29,6 +29,9 @@ class DiceController extends Object{
 		section.querySelector("div.control>button.reset").addEventListener("click", event => this.processDiceReset());
 	}
 
+	// get/set accessors
+	get rollSection () { return this.center.querySelector("section.roll"); }
+	get resetButton () { return this.rollSection.querySelector("div.control>button.reset") ;}
 
 	/**
 	 * Processes rolling a specific dice.
@@ -39,18 +42,16 @@ class DiceController extends Object{
 		const player = this.#players[playerIndex];
 		const dice = diceIndex == 0 ? player.firstDice : (diceIndex == 1 ? player.secondDice : player.thirdDice);
 
-		const section = document.querySelector("article.center>section.roll");
-		const playerSpan = section.querySelector("span." + (playerIndex == 0 ? "left" : "right"));
+		const playerSpan = rollSection.querySelector("span." + (playerIndex == 0 ? "left" : "right"));
 		const diceButton = playerSpan.querySelector("button." + (diceIndex == 0 ? "first" : (diceIndex == 1 ? "second" : "third")));
-		const resetButton = section.querySelector("div.control>button.reset");
 		
 		diceButton.disabled = true;
-		resetButton.disabled = true;
+		this.resetButton.disabled = true;
 		for (let duration = 1, loop = 0; loop < 20; ++loop, duration *= 1.4) {
 			diceButton.innerText = dice.roll().toString();
 			await sleep(duration);
 		}
-		resetButton.disabled = false;
+		this.resetButton.disabled = false;
 	}
 
 
@@ -65,8 +66,7 @@ class DiceController extends Object{
 		this.#players[1].secondDice.reset();
 		this.#players[1].thirdDice.reset();
 
-		const section = document.querySelector("article.center>section.roll");
-		for (const diceButton of section.querySelectorAll("span>button")) {
+		for (const diceButton of rollSection.querySelectorAll("span>button")) {
 			diceButton.innerText = "?";
 			diceButton.disabled = false;
 		}
