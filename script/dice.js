@@ -76,7 +76,7 @@ class DiceController {
 /**
  * Instances of this class represent dices.
  */
-class Dice {
+class Dice extends Object {
 	static #MIN_FACE_COUNT = 2;
 	static #MAX_FACE_COUNT = 100;
 
@@ -89,6 +89,7 @@ class Dice {
 	 * @param faceCount the (optional) number of faces, or none for six
 	 */
 	constructor (faceCount = 6) {
+		super();
 		if (faceCount < Dice.#MIN_FACE_COUNT || faceCount > Dice.#MAX_FACE_COUNT) throw new RangeError();
 
 		this.#faceCount = faceCount;
@@ -136,4 +137,5 @@ class Dice {
 window.addEventListener("load", event => {
 	const controller = new DiceController();
 	console.log(controller);
+	console.log(Object)
 });
