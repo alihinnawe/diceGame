@@ -48,7 +48,7 @@ class DiceController extends Controller {
 	 */
 	async processDiceRoll (playerIndex, diceIndex) {
 		const player = this.#players[playerIndex];
-		const dice = diceIndex == 0 ? player.firstDice : (diceIndex == 1 ? player.secondDice : player.thirdDice);
+		const dice = player.dice[diceIndex];
 		const diceButtons = playerIndex == 0 ? this.leftDiceButtons : this.rightDiceButtons;
 		const diceButton = diceButtons[diceIndex];
 
@@ -66,12 +66,12 @@ class DiceController extends Controller {
 	 * Processes resetting all dices.
 	 */
 	async processDiceReset () {
-		this.#players[0].firstDice.reset();
-		this.#players[0].secondDice.reset();
-		this.#players[0].thirdDice.reset();
-		this.#players[1].firstDice.reset();
-		this.#players[1].secondDice.reset();
-		this.#players[1].thirdDice.reset();
+		this.#players[0].dice[0].reset();
+		this.#players[0].dice[1].reset();
+		this.#players[0].dice[2].reset();
+		this.#players[1].dice[0].reset();
+		this.#players[1].dice[1].reset();
+		this.#players[1].dice[2].reset();
 
 		for (const diceButton of this.leftDiceButtons.concat(this.rightDiceButtons)) {
 			diceButton.innerText = "?";
