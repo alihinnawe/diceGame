@@ -55,7 +55,8 @@ class DiceController extends Controller {
 		diceButton.disabled = true;
 		this.resetButton.disabled = true;
 		for (let duration = 1, loop = 0; loop < 20; ++loop, duration *= 1.4) {
-			diceButton.querySelector("img").src = "image/dice-" + dice.roll() + "-6.png";
+			const fileName = "dice-" + dice.roll() + "-6.png";
+			diceButton.querySelector("img").src = "image/" + fileName;
 			await sleep(duration);
 		}
 		this.resetButton.disabled = false;
