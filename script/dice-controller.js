@@ -21,19 +21,20 @@ class DiceController extends Controller {
 		];
 
 		// register event listeners
-		const section = this.center.querySelector("section.roll");
-		section.querySelector("span.left button.first").addEventListener("click", event => this.processDiceRoll(0, 0));
-		section.querySelector("span.left button.second").addEventListener("click", event => this.processDiceRoll(0, 1));
-		section.querySelector("span.left button.third").addEventListener("click", event => this.processDiceRoll(0, 2));
-		section.querySelector("span.right button.first").addEventListener("click", event => this.processDiceRoll(1, 0));
-		section.querySelector("span.right button.second").addEventListener("click", event => this.processDiceRoll(1, 1));
-		section.querySelector("span.right button.third").addEventListener("click", event => this.processDiceRoll(1, 2));
-		section.querySelector("div.control>button.reset").addEventListener("click", event => this.processDiceReset());
+		this.rollSection.querySelector("span.left button.first").addEventListener("click", event => this.processDiceRoll(0, 0));
+		this.rollSection.querySelector("span.left button.second").addEventListener("click", event => this.processDiceRoll(0, 1));
+		this.rollSection.querySelector("span.left button.third").addEventListener("click", event => this.processDiceRoll(0, 2));
+		this.rollSection.querySelector("span.right button.first").addEventListener("click", event => this.processDiceRoll(1, 0));
+		this.rollSection.querySelector("span.right button.second").addEventListener("click", event => this.processDiceRoll(1, 1));
+		this.rollSection.querySelector("span.right button.third").addEventListener("click", event => this.processDiceRoll(1, 2));
+		this.evaluateButton.addEventListener("click", event => this.processEvaluation());
+		this.resetButton.addEventListener("click", event => this.processDiceReset());
 	}
 
 
 	// get/set accessors
 	get rollSection () { return this.center.querySelector("section.roll"); }
+	get evaluateButton () { return this.rollSection.querySelector("div.control>button.evaluate"); }
 	get resetButton () { return this.rollSection.querySelector("div.control>button.reset"); }
 	get leftSpan () { return this.rollSection.querySelector("span.left"); }
 	get rightSpan () { return this.rollSection.querySelector("span.right"); }
@@ -75,6 +76,13 @@ class DiceController extends Controller {
 			diceButton.querySelector("img").src = "image/dice.png";
 			diceButton.disabled = false;
 		}
+	}
+	
+	/**
+	 * Processes evaluating all dices.
+	 */
+	async processEvaluation () {
+		console.log("processEvaluation");
 	}
 }
 
