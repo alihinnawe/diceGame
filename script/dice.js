@@ -132,11 +132,42 @@ class Dice extends Object {
 }
 
 
+class Person extends Object {
+	
+	static #accountNbr = "xcvzvx";
+	#bankAccount = "MyBankAccount";
+	
+	constructor(name,familyName) {
+		super();
+		this.name = name;
+		this.familyName = familyName;	
+	}
+	
+	get bankAccount () {
+		return this.#bankAccount;
+	} 
+	
+}
+
+class Doctor extends Person {
+	
+	#doctorNbr = "MyDoctorNumber";
+	constructor(name,familyName,d_title){
+		super(name,familyName);
+		this.d_title = d_title;	
+	}
+}
+
 /**
  * Register a listener for the window's "load" event.
  */
 window.addEventListener("load", event => {
 	const controller = new DiceController();
 	console.log(controller);
-	console.log(Object)
+	const person1 = new Person("ALI","Hinnawe");
+	const dr_1 = new Doctor("samer","Harriri","Surgery")
+	console.log("person details",person1);
+	console.log("person details updated via get",person1.bankAccount);
+	console.log(dr_1);
+
 });
