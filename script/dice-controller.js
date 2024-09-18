@@ -60,7 +60,9 @@ class DiceController extends Controller {
 			diceButton.querySelector("img").src = "image/" + fileName;
 			await sleep(duration);
 		}
+		console.log(dice.faceValue)
 		this.resetButton.disabled = false;
+		
 	}
 
 
@@ -82,7 +84,49 @@ class DiceController extends Controller {
 	 * Processes evaluating all dices.
 	 */
 	async processEvaluation () {
-		console.log("processEvaluation");
+		output_result.value = "";
+		const player1_dice_1 = this.#players[0].dice[0].faceValue;
+		const player1_dice_2 = this.#players[0].dice[1].faceValue;
+		const player1_dice_3 = this.#players[0].dice[2].faceValue;
+		const player2_dice_1 = this.#players[1].dice[0].faceValue;
+		const player2_dice_2 = this.#players[1].dice[1].faceValue;
+		const player2_dice_3 = this.#players[1].dice[2].faceValue;
+		
+		console.log("processEvaluation",player1_dice_1,player1_dice_2,player1_dice_3,player2_dice_1,player2_dice_2,player2_dice_3);
+		if (Number.isNaN(player1_dice_1) || Number.isNaN(player1_dice_2) || Number.isNaN(player1_dice_3) ||
+			Number.isNaN(player2_dice_1) || Number.isNaN(player2_dice_2) || Number.isNaN(player2_dice_3)) 
+		{
+			console.log("CONTINUE PLAYING");
+		}
+		
+		else{
+			
+			let player1_results = player1_dice_1 + player1_dice_2 + player1_dice_3;
+			let player2_results = player2_dice_1 + player2_dice_2 + player2_dice_3;
+			let output_result = document.querySelector("input");
+			
+			if (player1_results > player2_results) {
+				output_result.value = "Player one wins.";
+			}
+			
+			else if (player2_results > player1_results){
+				
+				output_result.value = "Player two wins.";
+			}
+			
+			else {
+				output_result.value = alert("no one wins.");
+				this.processDiceReset();
+				for (const diceButton of this.leftDiceButtons.concat(this.rightDiceButtons)) {
+					diceButton.querySelector("img").src = "image/dice.png"; 
+					diceButton.disabled = false; };
+					output_result.value = "";
+				
+				
+			}
+			
+		}
+	
 	}
 }
 
