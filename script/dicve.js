@@ -1,13 +1,11 @@
 import { sleep } from "../../../tool/threads.js";
 import Controller from "../../../tool/controller.js";
 
-
 /**
  * The dice application controller type.
  */
-class DiceController extends Controller {
+class DiceController extends Controller{
 	#players;
-
 
 	/**
 	 * Initializes a new instance by registering the basic event listeners,
@@ -16,8 +14,8 @@ class DiceController extends Controller {
 	constructor () {
 		super();
 		this.#players = [
-			{ dice: [ new Dice(), new Dice(), new Dice() ] },
-			{ dice: [ new Dice(), new Dice(), new Dice() ] }
+			{ firstDice: new Dice(), secondDice: new Dice(), thirdDice: new Dice() },
+			{ firstDice: new Dice(), secondDice: new Dice(), thirdDice: new Dice() }
 		];
 
 		// register event listeners
@@ -31,15 +29,9 @@ class DiceController extends Controller {
 		section.querySelector("div.control>button.reset").addEventListener("click", event => this.processDiceReset());
 	}
 
-
 	// get/set accessors
 	get rollSection () { return this.center.querySelector("section.roll"); }
-	get resetButton () { return this.rollSection.querySelector("div.control>button.reset"); }
-	get leftSpan () { return this.rollSection.querySelector("span.left"); }
-	get rightSpan () { return this.rollSection.querySelector("span.right"); }
-	get leftDiceButtons () { return Array.from(this.leftSpan.querySelectorAll("button")); }
-	get rightDiceButtons () { return Array.from(this.rightSpan.querySelectorAll("button")); }
-
+	get resetButton () { return this.rollSection.querySelector("div.control>button.reset") ;}
 
 	/**
 	 * Processes rolling a specific dice.
@@ -49,9 +41,10 @@ class DiceController extends Controller {
 	async processDiceRoll (playerIndex, diceIndex) {
 		const player = this.#players[playerIndex];
 		const dice = diceIndex == 0 ? player.firstDice : (diceIndex == 1 ? player.secondDice : player.thirdDice);
-		const diceButtons = playerIndex == 0 ? this.leftDiceButtons : this.rightDiceButtons;
-		const diceButton = diceButtons[diceIndex];
 
+		const playerSpan = this.rollSection.querySelector("span." + (playerIndex == 0 ? "left" : "right"));
+		const diceButton = playerSpan.querySelector("button." + (diceIndex == 0 ? "first" : (diceIndex == 1 ? "second" : "third")));
+		
 		diceButton.disabled = true;
 		this.resetButton.disabled = true;
 		for (let duration = 1, loop = 0; loop < 20; ++loop, duration *= 1.4) {
@@ -73,7 +66,7 @@ class DiceController extends Controller {
 		this.#players[1].secondDice.reset();
 		this.#players[1].thirdDice.reset();
 
-		for (const diceButton of this.leftDiceButtons.concat(this.rightDiceButtons)) {
+		for (const diceButton of this.rollSection.querySelectorAll("span>button")) {
 			diceButton.innerText = "?";
 			diceButton.disabled = false;
 		}
@@ -82,7 +75,7 @@ class DiceController extends Controller {
 
 
 /**
- * Instances of this class represent dice.
+ * Instances of this class represent dices.
  */
 class Dice extends Object {
 	static #MIN_FACE_COUNT = 2;
@@ -97,32 +90,29 @@ class Dice extends Object {
 	 * @param faceCount the (optional) number of faces, or none for six
 	 */
 	constructor (faceCount = 6) {
-		super(); // constructor chaining
+		super();
 		if (faceCount < Dice.#MIN_FACE_COUNT || faceCount > Dice.#MAX_FACE_COUNT) throw new RangeError();
 
 		this.#faceCount = faceCount;
 		this.#faceValue = NaN;
 	}
 
-
 	/**
-	 * Getter for the faceCount property.
-	 * @return the face count
+	 * Getter for the faceCount property
+	 * @return the face count.
 	 */
-	get faceCount () {
+	get faceCount() {
 		return this.#faceCount;
 	}
-
-
+	
 	/**
-	 * Getter for the faceValue property.
-	 * @return the face value
+	 * Getter for the faceValue property
+	 * @return the face value.
 	 */
-	get faceValue () {
+	get faceValue() {
 		return this.#faceValue;
 	}
-
-
+	
 	/**
 	 * Rolls this dice and returns the new face value.
 	 * @return the new face value
@@ -142,10 +132,42 @@ class Dice extends Object {
 }
 
 
+class Person extends Object {
+	
+	static #accountNbr = "xcvzvx";
+	#bankAccount = "MyBankAccount";
+	
+	constructor(name,familyName) {
+		super();
+		this.name = name;
+		this.familyName = familyName;	
+	}
+	
+	get bankAccount () {
+		return this.#bankAccount;
+	} 
+	
+}
+
+class Doctor extends Person {
+	
+	#doctorNbr = "MyDoctorNumber";
+	constructor(name,familyName,d_title){
+		super(name,familyName);
+		this.d_title = d_title;	
+	}
+}
+
 /**
  * Register a listener for the window's "load" event.
  */
 window.addEventListener("load", event => {
 	const controller = new DiceController();
 	console.log(controller);
+	const person1 = new Person("ALI","Hinnawe");
+	const dr_1 = new Doctor("samer","Harriri","Surgery")
+	console.log("person details",person1);
+	console.log("person details updated via get",person1.bankAccount);
+	console.log(dr_1);
+
 });
