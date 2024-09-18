@@ -66,12 +66,9 @@ class DiceController extends Controller {
 	 * Processes resetting all dices.
 	 */
 	async processDiceReset () {
-		this.#players[0].dice[0].reset();
-		this.#players[0].dice[1].reset();
-		this.#players[0].dice[2].reset();
-		this.#players[1].dice[0].reset();
-		this.#players[1].dice[1].reset();
-		this.#players[1].dice[2].reset();
+		for (const player of this.#players)
+			for (const dice of player.dice) 
+				dice.reset();
 
 		for (const diceButton of this.leftDiceButtons.concat(this.rightDiceButtons)) {
 			diceButton.innerText = "?";
