@@ -72,6 +72,13 @@ body {
 	}
 
 	footer {
+		display: flex;
+		label {
+			width: 5.5rem;
+		}
+		input.message {
+			width: 100%;
+		}
 		input.message.success {
 			color: green;
 		}

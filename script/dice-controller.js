@@ -2,6 +2,7 @@ import { sleep } from "../../../tool/threads.js";
 import Controller from "../../../tool/controller.js";
 import Dice from "../../../tool/dice.js";
 
+
 /**
  * The dice application controller type.
  */
@@ -21,12 +22,12 @@ class DiceController extends Controller {
 		];
 
 		// register event listeners
-		this.rollSection.querySelector("span.left button.first").addEventListener("click", event => this.processDiceRoll(0, 0));
-		this.rollSection.querySelector("span.left button.second").addEventListener("click", event => this.processDiceRoll(0, 1));
-		this.rollSection.querySelector("span.left button.third").addEventListener("click", event => this.processDiceRoll(0, 2));
-		this.rollSection.querySelector("span.right button.first").addEventListener("click", event => this.processDiceRoll(1, 0));
-		this.rollSection.querySelector("span.right button.second").addEventListener("click", event => this.processDiceRoll(1, 1));
-		this.rollSection.querySelector("span.right button.third").addEventListener("click", event => this.processDiceRoll(1, 2));
+		this.leftDiceButtons[0].addEventListener("click", event => this.processDiceRoll(0, 0));
+		this.leftDiceButtons[1].addEventListener("click", event => this.processDiceRoll(0, 1));
+		this.leftDiceButtons[2].addEventListener("click", event => this.processDiceRoll(0, 2));
+		this.rightDiceButtons[0].addEventListener("click", event => this.processDiceRoll(1, 0));
+		this.rightDiceButtons[1].addEventListener("click", event => this.processDiceRoll(1, 1));
+		this.rightDiceButtons[2].addEventListener("click", event => this.processDiceRoll(1, 2));
 		this.evaluateButton.addEventListener("click", event => this.processEvaluation());
 		this.resetButton.addEventListener("click", event => this.processDiceReset());
 	}
@@ -54,15 +55,15 @@ class DiceController extends Controller {
 		const diceButton = diceButtons[diceIndex];
 
 		diceButton.disabled = true;
+		this.evaluateButton.disabled = true;
 		this.resetButton.disabled = true;
 		for (let duration = 1, loop = 0; loop < 20; ++loop, duration *= 1.4) {
 			const fileName = "dice-" + dice.roll() + "-6.png";
 			diceButton.querySelector("img").src = "image/" + fileName;
 			await sleep(duration);
 		}
-		console.log(dice.faceValue)
+		this.evaluateButton.disabled = false;
 		this.resetButton.disabled = false;
-		
 	}
 
 
@@ -70,8 +71,10 @@ class DiceController extends Controller {
 	 * Processes resetting all dices.
 	 */
 	async processDiceReset () {
+		this.messageOutput.value = "";
+
 		for (const player of this.#players)
-			for (const dice of player.dice) 
+			for (const dice of player.dice)
 				dice.reset();
 
 		for (const diceButton of this.leftDiceButtons.concat(this.rightDiceButtons)) {
@@ -79,56 +82,26 @@ class DiceController extends Controller {
 			diceButton.disabled = false;
 		}
 	}
-	
+
+
 	/**
-	 * Processes evaluating all dices.
+	 * Processes evaluating the dices.
 	 */
 	async processEvaluation () {
-		output_result.value = "";
-		const player1_dice_1 = this.#players[0].dice[0].faceValue;
-		const player1_dice_2 = this.#players[0].dice[1].faceValue;
-		const player1_dice_3 = this.#players[0].dice[2].faceValue;
-		const player2_dice_1 = this.#players[1].dice[0].faceValue;
-		const player2_dice_2 = this.#players[1].dice[1].faceValue;
-		const player2_dice_3 = this.#players[1].dice[2].faceValue;
-		
-		console.log("processEvaluation",player1_dice_1,player1_dice_2,player1_dice_3,player2_dice_1,player2_dice_2,player2_dice_3);
-		if (Number.isNaN(player1_dice_1) || Number.isNaN(player1_dice_2) || Number.isNaN(player1_dice_3) ||
-			Number.isNaN(player2_dice_1) || Number.isNaN(player2_dice_2) || Number.isNaN(player2_dice_3)) 
-		{
-			console.log("CONTINUE PLAYING");
-		}
-		
-		else{
-			
-			let player1_results = player1_dice_1 + player1_dice_2 + player1_dice_3;
-			let player2_results = player2_dice_1 + player2_dice_2 + player2_dice_3;
-			let output_result = document.querySelector("input");
-			
-			if (player1_results > player2_results) {
-				output_result.value = "Player one wins.";
-			}
-			
-			else if (player2_results > player1_results){
-				
-				output_result.value = "Player two wins.";
-			}
-			
-			else {
-				output_result.value = alert("no one wins.");
-				this.processDiceReset();
-				for (const diceButton of this.leftDiceButtons.concat(this.rightDiceButtons)) {
-					diceButton.querySelector("img").src = "image/dice.png"; 
-					diceButton.disabled = false; };
-					output_result.value = "";
-				
-				
-			}
-			
-		}
-	
+		const diceFaceSums = this.#players.map(player => player.dice.reduce((accu, element) => accu + element.faceValue, 0));
+
+		if (diceFaceSums.some(value => Number.isNaN(value))) {
+			this.messageOutput.value = "Das aktuelle Spiel ist noch nicht beendet!";
+		} else if (diceFaceSums[0] > diceFaceSums[1]) {
+			this.messageOutput.value = "Spieler 1 hat mit Summe " + diceFaceSums[0] + " gewonnen!";
+		} else if (diceFaceSums[0] < diceFaceSums[1]) {
+			this.messageOutput.value = "Spieler 2 hat mit Summe " + diceFaceSums[1] + " gewonnen!";
+		} else {
+			this.messageOutput.value = "Das Spiel endete mit Summe " + diceFaceSums[0] + " unentschieden!";
+		}			
 	}
 }
+
 
 
 /**
