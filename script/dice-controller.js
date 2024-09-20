@@ -1,6 +1,6 @@
 import { sleep } from "../../../tool/threads.js";
 import Controller from "../../../tool/controller.js";
-import Dice from "../../../tool/dice.js";
+import Dice from "./dice.js";
 
 
 /**
